@@ -1,0 +1,30 @@
+﻿@model BoardIndexViewModel
+
+@{
+    ViewBag.Title = Model.Board.Title;
+}
+
+<div class="d-flex justify-content-end">
+    <a asp-controller="board" asp-action="CreateThread" asp-route-boardId=@Model.Board.Id class="btn btn-primary mb-2">Post</a>
+</div>
+<table class="table" style="background-color:rgba(128, 128, 128, 0.4);">
+    <thead class="thead-light">
+        <tr>
+            <th width="60%">Thread</th>
+            <th width="20%">Replies</th>
+            <th width="20%">Last Post</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var thread in Model.ThreadViewModels)
+        {
+            <tr>
+                <th>
+                    <a asp-controller="thread" asp-action="index" asp-route-threadId=@thread.Thread.Id>@thread.Thread.Title</a>
+                </th>
+                <td>@(thread.RepliesCount - 1)</td>
+                <td>@thread.lastPost.DateTime</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,31 @@
+﻿@model HomeBoardsViewModel
+
+@{
+    ViewBag.Title = "Main Forum";
+}
+<table class="table" style="background-color:rgba(128, 128, 128, 0.4);">
+    <thead class="thead-light">
+        <tr>
+            <th width="60%">Title</th>
+            <th width="20%">Threads/Posts</th>
+            <th width="20%">Last Post</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var board in Model.Boards)
+        {
+            <tr>
+                <th><a asp-action="index" asp-controller="board" asp-route-boardId="@board.Board.Id">@board.Board.Title</a></th>
+                <td>Threads: @board.threadsCount <br /> Posts: @board.postsCount</td>
+                <td>
+                    @if (@board.lastPost != null)
+                    {
+                        @board.lastPost.Thread.Title
+                        <br />
+                        @board.lastPost.DateTime
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

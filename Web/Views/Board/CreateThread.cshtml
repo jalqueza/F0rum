@@ -1,0 +1,23 @@
+﻿@model CreateThreadViewModel
+
+@{
+    ViewBag.Title = $"Create {Model.BoardTitle} Thread";
+}
+
+    <form asp-controller="Board" asp-action="CreateThread" method="post">
+        <div class="form-group">
+            <label asp-for="Title">Title</label>
+            <input type="text" class="form-control" asp-for="Title">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Content">Example textarea</label>
+            <textarea asp-for="Content" class="form-control" rows="5" style="resize: none;"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        @Html.HiddenFor(model => model.BoardId)
+        @Html.HiddenFor(model => model.BoardTitle)
+        <div class="form-group d-flex just">
+            <button type="submit" class="btn btn-success">Create</button>
+        </div>
+    </form>

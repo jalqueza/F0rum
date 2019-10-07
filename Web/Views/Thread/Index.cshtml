@@ -1,0 +1,171 @@
+﻿@model ThreadIndexViewModel
+
+
+@section Styles{
+    <style>
+        blockquote {
+            background: #f9f9f9;
+            border-left: 10px solid #ccc;
+            margin: 1.5em 10px;
+            padding: 0.5em 10px;
+            quotes: "\201C""\201D""\2018""\2019";
+            word-break: break-all;
+        }
+
+            blockquote p:before {
+                color: #ccc;
+                font-size: 4em;
+                line-height: 0.1em;
+                margin-right: 0.25em;
+                vertical-align: -0.4em;
+            }
+
+            blockquote p {
+                display: inline;
+            }
+
+        .delete {
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+        }
+    </style>
+}
+<h3>Thread: @Model.Thread.Title</h3>
+
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div class="d-flex" style="overflow: hidden;">
+    <div style="width: 20%; background: #343a40; color: white">
+        <div style="margin: 5pt;">
+            <div style="border-bottom: 1pt solid white">
+                Username...
+            </div>
+            <div>
+                @Model.Thread.Posts.FirstOrDefault().DateTime
+            </div>
+        </div>
+
+    </div>
+    <div style="width: 80%; background: #cbe3f5;">
+        <div style="margin: 5pt;">
+            @Model.Thread.Posts.FirstOrDefault().Content
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Thread" asp-action="WritePost" method="post">
+    @Html.HiddenFor(model => model.ThreadId)
+    <textarea asp-for="CreatePostViewModel.Content" class="form-control mt-2" rows="4" style="resize: none;"></textarea>
+    <div class="d-flex justify-content-end mb-5">
+        <button type="submit" style="text-decoration: underline; border:none; background: none">Write Post</button>
+    </div>
+</form>
+
+@foreach (var post in Model.Thread.Posts.Skip(1))
+{
+    <div class="d-flex" style="overflow: hidden;">
+        <div style="width: 20%; background: #343a40; color: white">
+            <div style="margin: 5pt;">
+                <div style="border-bottom: 1pt solid white">
+                    Username...
+                </div>
+                <div>
+                    @post.DateTime
+                </div>
+            </div>
+        </div>
+        <div style="width: 80%; background: #cbe3f5;">
+            @if (post.Reply != null)
+            {
+                <blockquote><div class="mb-3">Username...</div><div class="d-flex"><i class="fas fa-quote-left" style="font-size: 10pt"></i><p class="mt-1"> &nbsp &nbsp @post.Reply.Content</p></div></blockquote>
+
+            }
+            <div style="margin: 5pt; word-break:break-all;">
+                @post.Content
+            </div>
+        </div>
+    </div>
+    @if (post.Content != "[This post has been removed]")
+    {
+        <form asp-controller="Thread" asp-action="DeletePost" method="post">
+            @Html.HiddenFor(model => model.ThreadId)
+            <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white;">
+                <div class="d-flex justify-content-end">
+                    <button class="m-2 delete" style="font-size: 12px" type="submit" onclick="return deletePost(this, @post.Id);"><i class="fas fa-trash"></i> Delete</button>
+                    <span class="m-2" style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-edit"></i> Edit</span>
+                    <span class="m-2 " style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-reply"></i> Reply</span>
+                </div>
+            </div>
+        </form>
+    }
+    <div class="mb-4"></div>
+    <div id=@(post.Id.ToString() + "Form") style="display: none;">
+        <form asp-controller="Thread" asp-action="WriteReply" method="post">
+            @Html.HiddenFor(model => model.ThreadId)
+            @Html.Hidden("ReplyId", post.Id)
+            <textarea asp-for="CreateReplyViewModel.Content" id=@(post.Id.ToString() + "Textarea") class="form-control mt-2" rows="4" style="resize: none;"></textarea>
+            <div class="d-flex justify-content-end mb-5">
+                <i class="fas fa-times p-2" style="background: lightgrey" onclick="endReplyOrEdit( (@post.Id).toString())"></i>
+                <button id="@(post.Id.ToString() + "SubmitReply")" onclick="submitReply(this, @post.Id);" type="submit" style="text-decoration: underline; border:none; background: white">Write Reply</button>
+                <button id="@(post.Id.ToString() + "SubmitEdit")" onclick="submitReply(this, @post.Id);" type="submit" style="text-decoration: underline; border:none; background: white">Update Reply</button>
+            </div>
+        </form>
+    </div>
+}
+
+@section Scripts{
+    <script src="https://kit.fontawesome.com/ab1b655dca.js" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function replyOrEdit(id, innerText) {
+            document.getElementById(id + "ReplyEditBar").style.display = 'none';
+            document.getElementById(id + "Form").style.display = null;
+            if (innerText.includes("Edit")) {
+                document.getElementById(id + "SubmitReply").style.display = 'none';
+                document.getElementById(id + "SubmitEdit").style.display = null;
+            } else if (innerText.includes("Reply")) {
+                document.getElementById(id + "SubmitReply").style.display = null;
+                document.getElementById(id + "SubmitEdit").style.display = 'none';
+            }
+        }
+
+        function endReplyOrEdit(id) {
+            document.getElementById(id + "ReplyEditBar").style.display = null;
+            document.getElementById(id + "Form").style.display = 'none';
+        }
+
+        function submitReply(element, id) {
+            var hiddenInput = document.createElement("input");
+            hiddenInput.id = "SubmitType";
+            hiddenInput.name = "SubmitType";
+            hiddenInput.type = "hidden";
+            if (element.innerText == "Write Reply") {
+                hiddenInput.value = "Reply"
+            }
+            else if (element.innerText == "Update Reply") {
+                hiddenInput.value = "Update"
+                var hiddenInputForId = document.createElement("input");
+                hiddenInputForId.id = "UpdateId";
+                hiddenInputForId.name = "UpdateId";
+                hiddenInputForId.type = "hidden";
+                hiddenInputForId.value = id;
+                element.appendChild(hiddenInputForId);
+            }
+            element.appendChild(hiddenInput);
+            return true;
+        }
+
+        function deletePost(element, id) {
+            var hiddenInputForId = document.createElement("input");
+            hiddenInputForId.id = "DeleteId";
+            hiddenInputForId.name = "DeleteId";
+            hiddenInputForId.type = "hidden";
+            hiddenInputForId.value = id;
+            element.appendChild(hiddenInputForId);
+            console.log(element);
+            return true;
+        }
+    </script>
+}
