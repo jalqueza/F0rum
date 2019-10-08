@@ -87,7 +87,7 @@
             </div>
         </div>
     </div>
-    @if (post.Content != "[This post has been removed]")
+    @if (post.Content != "[This post has been removed]" && post.User == post.User)
     {
         <form asp-controller="Thread" asp-action="DeletePost" method="post">
             @Html.HiddenFor(model => model.ThreadId)

@@ -25,19 +25,23 @@ namespace Web.Controllers
             ThreadIndexViewModel model = new ThreadIndexViewModel();
             model.Thread = _threadRepository.GetById(threadId);
             model.ThreadId = model.Thread.Id;
+            model.Username = User.Identity.Name;
             return View(model);
         }
 
         [HttpPost]
         public IActionResult WritePost(ThreadIndexViewModel model)
         {
+            
+
             if (model.CreatePostViewModel.Content != null)
             {
                 Post newPost = new Post
                 {
                     Content = model.CreatePostViewModel.Content,
-                    ThreadId = model.ThreadId
-                };
+                    ThreadId = model.ThreadId,
+                    User = User.Identity.Name
+            };
                 _postRepository.Add(newPost);
 
                 return RedirectToAction("index", new { threadId = model.ThreadId });
@@ -59,7 +63,8 @@ namespace Web.Controllers
                     {
                         Content = model.CreateReplyViewModel.Content,
                         ThreadId = model.ThreadId,
-                        ReplyId = model.ReplyId
+                        ReplyId = model.ReplyId,
+                        User = User.Identity.Name
                     };
                     _postRepository.Add(newPost);
                 }

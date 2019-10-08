@@ -23,6 +23,10 @@ namespace Web.Controllers
         }
         public IActionResult Index()
         {
+
+            var huh = User.Identity.Name;
+            var heh = User.Identity.IsAuthenticated;
+
             var model = new HomeBoardsViewModel();
             model.Boards = new List<HomeBoardViewModel>();
 

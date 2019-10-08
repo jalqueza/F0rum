@@ -27,5 +27,7 @@ namespace Web.Models
 
 
         public ICollection<Post> Replies { get; set;}
+
+        public String User { get; set; }
     }
 }

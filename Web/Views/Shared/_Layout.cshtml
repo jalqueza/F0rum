@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -28,6 +30,31 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li>
+                                <form class="nav-link" asp-controller="Account" asp-action="Logout">
+                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        Logout @User.Identity.Name
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item active">
+                                <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
+
+                            </li>
+                            <li class="nav-item active">
+                                <a asp-controller="Account" asp-action="Register" class="nav-link">Register</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
             </div>
         </nav>
     </header>

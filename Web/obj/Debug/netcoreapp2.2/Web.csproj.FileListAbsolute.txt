@@ -30,3 +30,5 @@ C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Web.c
 C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Board\Index.g.cshtml.cs
 C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Board\CreateThread.g.cshtml.cs
 C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Thread\Index.g.cshtml.cs
+C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Account\Register.g.cshtml.cs
+C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Account\Login.g.cshtml.cs

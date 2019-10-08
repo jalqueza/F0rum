@@ -13,5 +13,6 @@ namespace Web.ViewModels
         public string SubmitType { get; set; }
         public int UpdateId { get; set; }
         public int DeleteId { get; set; }
+        public string Username { get; set; }
     }
 }
