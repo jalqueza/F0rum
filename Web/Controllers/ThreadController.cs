@@ -1,6 +1,7 @@
 ﻿using Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers
 {
@@ -29,6 +30,7 @@ namespace Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult WritePost(ThreadIndexViewModel model)
         {

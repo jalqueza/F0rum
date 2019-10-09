@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using Web.Models;
@@ -40,6 +41,7 @@ namespace Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         [HttpGet]
         public ViewResult CreateThread(int boardId)
         {
@@ -64,7 +66,8 @@ namespace Web.Controllers
                 Post newPost = new Post
                 {
                     Content = model.Content,
-                    ThreadId = newThread.Id
+                    ThreadId = newThread.Id,
+                    User = User.Identity.Name
                 };
                 _postRepository.Add(newPost);
 

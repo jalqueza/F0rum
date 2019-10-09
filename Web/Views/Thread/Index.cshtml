@@ -40,7 +40,7 @@
     <div style="width: 20%; background: #343a40; color: white">
         <div style="margin: 5pt;">
             <div style="border-bottom: 1pt solid white">
-                Username...
+                @Model.Thread.Posts.FirstOrDefault().User
             </div>
             <div>
                 @Model.Thread.Posts.FirstOrDefault().DateTime
@@ -54,22 +54,22 @@
         </div>
     </div>
 </div>
-
 <form asp-controller="Thread" asp-action="WritePost" method="post">
     @Html.HiddenFor(model => model.ThreadId)
     <textarea asp-for="CreatePostViewModel.Content" class="form-control mt-2" rows="4" style="resize: none;"></textarea>
-    <div class="d-flex justify-content-end mb-5">
+    <div class="d-flex justify-content-end">
         <button type="submit" style="text-decoration: underline; border:none; background: none">Write Post</button>
     </div>
 </form>
 
+<div class="mb-5"></div>
 @foreach (var post in Model.Thread.Posts.Skip(1))
 {
     <div class="d-flex" style="overflow: hidden;">
         <div style="width: 20%; background: #343a40; color: white">
             <div style="margin: 5pt;">
                 <div style="border-bottom: 1pt solid white">
-                    Username...
+                    @post.User
                 </div>
                 <div>
                     @post.DateTime
@@ -79,7 +79,7 @@
         <div style="width: 80%; background: #cbe3f5;">
             @if (post.Reply != null)
             {
-                <blockquote><div class="mb-3">Username...</div><div class="d-flex"><i class="fas fa-quote-left" style="font-size: 10pt"></i><p class="mt-1"> &nbsp &nbsp @post.Reply.Content</p></div></blockquote>
+                <blockquote><div class="mb-3">@post.Reply.User</div><div class="d-flex"><i class="fas fa-quote-left" style="font-size: 10pt"></i><p class="mt-1"> &nbsp &nbsp @post.Reply.Content</p></div></blockquote>
 
             }
             <div style="margin: 5pt; word-break:break-all;">
@@ -87,7 +87,7 @@
             </div>
         </div>
     </div>
-    @if (post.Content != "[This post has been removed]" && post.User == post.User)
+    @if (post.Content != "[This post has been removed]" && post.User == Model.Username)
     {
         <form asp-controller="Thread" asp-action="DeletePost" method="post">
             @Html.HiddenFor(model => model.ThreadId)
@@ -95,11 +95,19 @@
                 <div class="d-flex justify-content-end">
                     <button class="m-2 delete" style="font-size: 12px" type="submit" onclick="return deletePost(this, @post.Id);"><i class="fas fa-trash"></i> Delete</button>
                     <span class="m-2" style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-edit"></i> Edit</span>
-                    <span class="m-2 " style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-reply"></i> Reply</span>
                 </div>
             </div>
         </form>
     }
+    else if (post.Content != "[This post has been removed]" && Model.Username != null)
+    {
+        <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white;">
+            <div class="d-flex justify-content-end">
+                <span class="m-2 " style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-reply"></i> Reply</span>
+            </div>
+        </div>
+    }
+
     <div class="mb-4"></div>
     <div id=@(post.Id.ToString() + "Form") style="display: none;">
         <form asp-controller="Thread" asp-action="WriteReply" method="post">
