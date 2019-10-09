@@ -12,17 +12,17 @@
             word-break: break-all;
         }
 
-            blockquote p:before {
-                color: #ccc;
-                font-size: 4em;
-                line-height: 0.1em;
-                margin-right: 0.25em;
-                vertical-align: -0.4em;
-            }
+        blockquote p:before {
+            color: #ccc;
+            font-size: 4em;
+            line-height: 0.1em;
+            margin-right: 0.25em;
+            vertical-align: -0.4em;
+        }
 
-            blockquote p {
-                display: inline;
-            }
+        blockquote p {
+            display: inline;
+        }
 
         .delete {
             background: none !important;
@@ -36,13 +36,13 @@
 
 <div asp-validation-summary="All" class="text-danger"></div>
 
-<div class="d-flex" style="overflow: hidden;">
-    <div style="width: 20%; background: #343a40; color: white">
+<div class="d-flex" style="overflow: hidden; border: solid 2px black;">
+    <div style="width: 20%; background: #343a40; color: white; word-break: break-word;">
         <div style="margin: 5pt;">
             <div style="border-bottom: 1pt solid white">
                 @Model.Thread.Posts.FirstOrDefault().User
             </div>
-            <div>
+            <div s>
                 @Model.Thread.Posts.FirstOrDefault().DateTime
             </div>
         </div>
@@ -65,6 +65,7 @@
 <div class="mb-5"></div>
 @foreach (var post in Model.Thread.Posts.Skip(1))
 {
+<div style="border: solid 2px black;">
     <div class="d-flex" style="overflow: hidden;">
         <div style="width: 20%; background: #343a40; color: white">
             <div style="margin: 5pt;">
@@ -91,7 +92,7 @@
     {
         <form asp-controller="Thread" asp-action="DeletePost" method="post">
             @Html.HiddenFor(model => model.ThreadId)
-            <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white;">
+            <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white; border-top: solid 1px black;">
                 <div class="d-flex justify-content-end">
                     <button class="m-2 delete" style="font-size: 12px" type="submit" onclick="return deletePost(this, @post.Id);"><i class="fas fa-trash"></i> Delete</button>
                     <span class="m-2" style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-edit"></i> Edit</span>
@@ -101,12 +102,13 @@
     }
     else if (post.Content != "[This post has been removed]" && Model.Username != null)
     {
-        <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white;">
+        <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white; border-top: solid 1px black;">
             <div class="d-flex justify-content-end">
                 <span class="m-2 " style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-reply"></i> Reply</span>
             </div>
         </div>
     }
+    </div>
 
     <div class="mb-4"></div>
     <div id=@(post.Id.ToString() + "Form") style="display: none;">
@@ -166,14 +168,18 @@
         }
 
         function deletePost(element, id) {
-            var hiddenInputForId = document.createElement("input");
-            hiddenInputForId.id = "DeleteId";
-            hiddenInputForId.name = "DeleteId";
-            hiddenInputForId.type = "hidden";
-            hiddenInputForId.value = id;
-            element.appendChild(hiddenInputForId);
-            console.log(element);
-            return true;
+
+            if (confirm("Are you sure you want to delete your post?")) {
+                var hiddenInputForId = document.createElement("input");
+                hiddenInputForId.id = "DeleteId";
+                hiddenInputForId.name = "DeleteId";
+                hiddenInputForId.type = "hidden";
+                hiddenInputForId.value = id;
+                element.appendChild(hiddenInputForId);
+                return true;
+            } else {
+                return false;
+            }
         }
     </script>
 }

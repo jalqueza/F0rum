@@ -1,18 +1,18 @@
 ﻿@model BoardIndexViewModel
 
 @{
-    ViewBag.Title = Model.Board.Title;
+    ViewBag.Title = Model.Board.Title + " Board";
 }
 
 <div class="d-flex justify-content-end">
-    <a asp-controller="board" asp-action="CreateThread" asp-route-boardId=@Model.Board.Id class="btn btn-primary mb-2">Post</a>
+    <a asp-controller="board" asp-action="CreateThread" asp-route-boardId=@Model.Board.Id class="btn btn-light mb-2">Post Thread</a>
 </div>
-<table class="table" style="background-color:rgba(128, 128, 128, 0.4);">
+<table class="table" style="background-color:rgba(128, 128, 128, 0.8);">
     <thead class="thead-light">
         <tr>
-            <th width="60%">Thread</th>
+            <th width="55%">Thread</th>
             <th width="20%">Replies</th>
-            <th width="20%">Last Post</th>
+            <th width="25%">Last Post</th>
         </tr>
     </thead>
     <tbody>
@@ -20,10 +20,17 @@
         {
             <tr>
                 <th>
-                    <a asp-controller="thread" asp-action="index" asp-route-threadId=@thread.Thread.Id>@thread.Thread.Title</a>
+                    <a asp-controller="thread" asp-action="index" asp-route-threadId=@thread.Thread.Id style="color: white;">@thread.Thread.Title</a>
                 </th>
                 <td>@(thread.RepliesCount - 1)</td>
-                <td>@thread.lastPost.DateTime</td>
+                <td>
+                    <div>
+                        @thread.lastPost.User
+                    </div>
+                    <div>
+                        @thread.lastPost.DateTime
+                    </div>
+                </td>
             </tr>
         }
     </tbody>

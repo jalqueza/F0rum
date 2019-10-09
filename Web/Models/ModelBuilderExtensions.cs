@@ -15,6 +15,14 @@ namespace Web.Models
                 new Board { Id = 2, Title = "Technology" },
                 new Board { Id = 3, Title = "Sports" });
 
+            modelBuilder.Entity<Thread>().HasData(
+                new { Id = 1, Title = "Hows the weather?", DateTime = DateTime.Now, BoardId = 1 }
+            );
+
+            modelBuilder.Entity<Post>().HasData(
+                new { Id = 1, Content = "It's a cold ting", DateTime = DateTime.Now, ThreadId = 1 }
+            );
+
         }        
     }
 }
