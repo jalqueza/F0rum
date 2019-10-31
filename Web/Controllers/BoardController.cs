@@ -41,7 +41,7 @@ namespace Web.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles= "Admin, User")]
         [HttpGet]
         public ViewResult CreateThread(int boardId)
         {
@@ -51,6 +51,7 @@ namespace Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         public IActionResult CreateThread(CreateThreadViewModel model)
         {

@@ -12,17 +12,17 @@
             word-break: break-all;
         }
 
-        blockquote p:before {
-            color: #ccc;
-            font-size: 4em;
-            line-height: 0.1em;
-            margin-right: 0.25em;
-            vertical-align: -0.4em;
-        }
+            blockquote p:before {
+                color: #ccc;
+                font-size: 4em;
+                line-height: 0.1em;
+                margin-right: 0.25em;
+                vertical-align: -0.4em;
+            }
 
-        blockquote p {
-            display: inline;
-        }
+            blockquote p {
+                display: inline;
+            }
 
         .delete {
             background: none !important;
@@ -65,69 +65,69 @@
 <div class="mb-5"></div>
 @foreach (var post in Model.Thread.Posts.Skip(1))
 {
-<div style="border: solid 2px black;">
-    <div class="d-flex" style="overflow: hidden;">
-        <div style="width: 20%; background: #343a40; color: white">
-            <div style="margin: 5pt;">
-                <div style="border-bottom: 1pt solid white">
-                    @post.User
+    <div class="mb-4">
+        <div style="border: solid 2px black;">
+            <div class="d-flex" style="overflow: hidden;">
+                <div class="d-flex flex-column" style="width: 20%; background: #343a40; color: white; padding: 5pt;">
+                    <div class="mb-auto" style="border-bottom: 1pt solid white;">
+                        @post.User
+                    </div>
+                    <div>
+                        @post.DateTime
+                    </div>
                 </div>
-                <div>
-                    @post.DateTime
+                <div style="width: 80%; background: #cbe3f5;">
+                    @if (post.Reply != null)
+                    {
+                        <blockquote><div class="mb-3">@post.Reply.User</div><div class="d-flex"><i class="fas fa-quote-left" style="font-size: 10pt"></i><p class="mt-1"> &nbsp &nbsp @post.Reply.Content</p></div></blockquote>
+
+                    }
+                    <div style="margin: 5pt; word-break:break-all;">
+                        @post.Content
+                    </div>
                 </div>
             </div>
-        </div>
-        <div style="width: 80%; background: #cbe3f5;">
-            @if (post.Reply != null)
+            @if (post.Content != "[This post has been removed]" && (post.User == Model.Username || User.IsInRole("Admin")))
             {
-                <blockquote><div class="mb-3">@post.Reply.User</div><div class="d-flex"><i class="fas fa-quote-left" style="font-size: 10pt"></i><p class="mt-1"> &nbsp &nbsp @post.Reply.Content</p></div></blockquote>
+                <form asp-controller="Thread" asp-action="DeletePost" method="post">
+                    @Html.HiddenFor(model => model.ThreadId)
+                    <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: rgba(255, 255, 255, 0.7); border-top: solid 1px black;">
+                        <div class="d-flex justify-content-end">
+                            <button class="m-2 delete" style="font-size: 12px" type="submit" onclick="return deletePost(this, @post.Id);"><i class="fas fa-trash"></i> Delete</button>
+                            @if (post.User == Model.Username)
+                            {
+                                <span class="m-2" style="font-size: 12px; cursor: pointer;" onclick="replyOrEdit((@post.Id).toString(), this.innerText);"><i class="fas fa-edit"></i> Edit</span>
 
+                            }
+                        </div>
+                    </div>
+                </form>
             }
-            <div style="margin: 5pt; word-break:break-all;">
-                @post.Content
-            </div>
-        </div>
-    </div>
-    @if (post.Content != "[This post has been removed]" && post.User == Model.Username)
-    {
-        <form asp-controller="Thread" asp-action="DeletePost" method="post">
-            @Html.HiddenFor(model => model.ThreadId)
-            <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white; border-top: solid 1px black;">
-                <div class="d-flex justify-content-end">
-                    <button class="m-2 delete" style="font-size: 12px" type="submit" onclick="return deletePost(this, @post.Id);"><i class="fas fa-trash"></i> Delete</button>
-                    <span class="m-2" style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-edit"></i> Edit</span>
+            else if (post.Content != "[This post has been removed]" && Model.Username != null)
+            {
+                <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: rgba(255, 255, 255, 0.7); border-top: solid 1px black;">
+                    <div class="d-flex justify-content-end">
+                        <span class="m-2" style="font-size: 12px; cursor: pointer;" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-reply"></i> Reply</span>
+                    </div>
                 </div>
-            </div>
-        </form>
-    }
-    else if (post.Content != "[This post has been removed]" && Model.Username != null)
-    {
-        <div id=@(post.Id.ToString() + "ReplyEditBar") style="background: white; border-top: solid 1px black;">
-            <div class="d-flex justify-content-end">
-                <span class="m-2 " style="font-size: 12px" onclick="replyOrEdit((@post.Id).toString(), this.innerText)"><i class="fas fa-reply"></i> Reply</span>
-            </div>
+            }
         </div>
-    }
-    </div>
-
-    <div class="mb-4"></div>
-    <div id=@(post.Id.ToString() + "Form") style="display: none;">
-        <form asp-controller="Thread" asp-action="WriteReply" method="post">
-            @Html.HiddenFor(model => model.ThreadId)
-            @Html.Hidden("ReplyId", post.Id)
-            <textarea asp-for="CreateReplyViewModel.Content" id=@(post.Id.ToString() + "Textarea") class="form-control mt-2" rows="4" style="resize: none;"></textarea>
-            <div class="d-flex justify-content-end mb-5">
-                <i class="fas fa-times p-2" style="background: lightgrey" onclick="endReplyOrEdit( (@post.Id).toString())"></i>
-                <button id="@(post.Id.ToString() + "SubmitReply")" onclick="submitReply(this, @post.Id);" type="submit" style="text-decoration: underline; border:none; background: white">Write Reply</button>
-                <button id="@(post.Id.ToString() + "SubmitEdit")" onclick="submitReply(this, @post.Id);" type="submit" style="text-decoration: underline; border:none; background: white">Update Reply</button>
-            </div>
-        </form>
+        <div id=@(post.Id.ToString() + "Form") style="display: none;">
+            <form asp-controller="Thread" asp-action="WriteReply" method="post">
+                @Html.HiddenFor(model => model.ThreadId)
+                @Html.Hidden("ReplyId", post.Id)
+                <textarea asp-for="CreateReplyViewModel.Content" id=@(post.Id.ToString() + "Textarea") class="form-control mt-1" rows="4" style="resize: none;"></textarea>
+                <div class="d-flex justify-content-end mb-5" style="font-size: 12px; background: rgba(255, 255, 255, 0.7);">
+                    <i class="fas fa-times p-2 mr-auto" style="cursor: pointer;" onclick="endReplyOrEdit( (@post.Id).toString())"></i>
+                    <button id="@(post.Id.ToString() + "SubmitReply")" onclick="submitReply(this, @post.Id);" type="submit" style="text-decoration: underline; border:none; background: none;">Write Reply</button>
+                    <button id="@(post.Id.ToString() + "SubmitEdit")" onclick="submitReply(this, @post.Id);" type="submit" style="text-decoration: underline; border:none; background: none;">Update Reply</button>
+                </div>
+            </form>
+        </div>
     </div>
 }
 
 @section Scripts{
-    <script src="https://kit.fontawesome.com/ab1b655dca.js" crossorigin="anonymous"></script>
-
     <script type="text/javascript">
         function replyOrEdit(id, innerText) {
             document.getElementById(id + "ReplyEditBar").style.display = 'none';

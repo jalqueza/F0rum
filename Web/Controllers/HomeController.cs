@@ -10,22 +10,13 @@ namespace Web.Controllers
     {
 
         private readonly IBoardRepository _boardRepository;
-        private readonly IThreadRepository _threadRepository;
-        private readonly IPostRepository _postRepository;
 
-        public HomeController(IBoardRepository boardRepository,
-                              IThreadRepository threadRepository,
-                              IPostRepository postRepository)
+        public HomeController(IBoardRepository boardRepository)
         {
             _boardRepository = boardRepository;
-            _threadRepository = threadRepository;
-            _postRepository = postRepository;
         }
         public IActionResult Index()
         {
-
-            var huh = User.Identity.Name;
-            var heh = User.Identity.IsAuthenticated;
 
             var model = new HomeBoardsViewModel();
             model.Boards = new List<HomeBoardViewModel>();

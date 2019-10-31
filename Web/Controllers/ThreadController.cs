@@ -7,15 +7,12 @@ namespace Web.Controllers
 {
     public class ThreadController : Controller
     {
-        private readonly IBoardRepository _boardRepository;
         private readonly IPostRepository _postRepository;
         private readonly IThreadRepository _threadRepository;
 
-        public ThreadController(IBoardRepository boardRepository,
-                              IPostRepository postRepository,
-                              IThreadRepository threadRepository)
+        public ThreadController(IPostRepository postRepository,
+                                IThreadRepository threadRepository)
         {
-            _boardRepository = boardRepository;
             _postRepository = postRepository;
             _threadRepository = threadRepository;
         }
@@ -30,7 +27,7 @@ namespace Web.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles= "Admin, User")]
         [HttpPost]
         public IActionResult WritePost(ThreadIndexViewModel model)
         {
@@ -50,10 +47,12 @@ namespace Web.Controllers
             }
 
             model.Thread = _threadRepository.GetById(model.ThreadId);
+            model.Username = User.Identity.Name;
 
             return View("Index", model);
         }
 
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         public IActionResult WriteReply(ThreadIndexViewModel model)
         {
@@ -86,10 +85,12 @@ namespace Web.Controllers
             }
 
             model.Thread = _threadRepository.GetById(model.ThreadId);
+            model.Username = User.Identity.Name;
 
             return View("Index", model);
         }
 
+        [Authorize(Roles= "Admin, User")]
         [HttpPost]
         public IActionResult DeletePost(ThreadIndexViewModel model)
         {

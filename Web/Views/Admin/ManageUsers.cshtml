@@ -1,0 +1,75 @@
+﻿@model ManageUsersViewModel
+
+@{
+    ViewBag.Title = "Manage Users";
+}
+
+@if (Model.Users.Any())
+{
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th nowrap></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+            <tr class="dropdown" style="background-color:lightgray !important;">
+                <td id="@user.Email Email">@user.Email</td>
+                <td id="@user.Email RoleView" style="display: block;">@user.Role</td>
+                <td id="@user.Email RoleDrop" style="display: none;">
+                    <select id="@user.Email Select" class="custom-select custom-select">
+                        @foreach (var role in Model.Roles)
+                        {
+                        <option value=@role>@role</option>
+                        }
+                    </select>
+                </td>
+                <td nowrap class="text-right">
+                    <a class="btn btn-sm btn-success" onclick="editRole(this, this.nextElementSibling,'@user.Email')"><i class="fas fa-edit"></i></a>
+                    <a class="btn btn-sm btn-success" onclick="saveRole(this, this.previousElementSibling, '@user.Email')" style="display: none;" href="#"><i class="fas fa-save"></i></a>
+                    <a class="btn btn-sm btn-danger" onclick="deleteUser('@user.Email')"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@section Scripts{
+    <script type="text/javascript">
+
+        function editRole(hideElement, showElement, email) {
+            hideElement.style.display = 'none';
+            showElement.style.display = null;
+
+            document.getElementById(email+" RoleView").style.display = 'none';
+            document.getElementById(email+" RoleDrop").style.display = null;
+        }
+
+        function saveRole(hideElement, showElement, email) {
+            hideElement.style.display = 'none';
+            showElement.style.display = null;
+
+            document.getElementById(email+" RoleView").style.display = null;
+            document.getElementById(email + " RoleDrop").style.display = 'none';
+
+            var e = document.getElementById(email + " Select");
+            var selectedRole = e.options[e.selectedIndex].text;
+
+            window.location.href = '@Url.Action("ChangeRole", "Admin")/?email=' + email + '&role=' + selectedRole;
+        }
+
+        function deleteUser(email) {
+            if (confirm("Are you sure you want to delete user " + email + "?")) {
+                window.location.href = '@Url.Action("DeleteUser", "Admin")/?email=' + email;
+            }
+
+        }
+
+    </script>
+}

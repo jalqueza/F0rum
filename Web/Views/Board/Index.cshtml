@@ -1,24 +1,31 @@
-﻿@model BoardIndexViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@model BoardIndexViewModel
 
 @{
     ViewBag.Title = Model.Board.Title + " Board";
 }
 
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+}
+
 <div class="d-flex justify-content-end">
     <a asp-controller="board" asp-action="CreateThread" asp-route-boardId=@Model.Board.Id class="btn btn-light mb-2">Post Thread</a>
 </div>
-<table class="table" style="background-color:rgba(128, 128, 128, 0.8);">
+<table id="table_id" class="table">
     <thead class="thead-light">
         <tr>
-            <th width="55%">Thread</th>
+            <th width="50%">Thread</th>
             <th width="20%">Replies</th>
             <th width="25%">Last Post</th>
+            <th nowrap></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var thread in Model.ThreadViewModels)
         {
-            <tr>
+            <tr style="background-color:rgba(128, 128, 128, 0.8) !important;">
                 <th>
                     <a asp-controller="thread" asp-action="index" asp-route-threadId=@thread.Thread.Id style="color: white;">@thread.Thread.Title</a>
                 </th>
@@ -31,7 +38,32 @@
                         @thread.lastPost.DateTime
                     </div>
                 </td>
+                <td>
+                    @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
+                    {
+                        <a class="btn btn-sm btn-danger" onclick="deleteBoard('@thread.Thread.Title', '@thread.Thread.Id')"><i class="fas fa-trash"></i></a>
+                    }
+
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table_id').DataTable({
+                "ordering": false,
+                "searching": false
+            });
+        });
+
+        function deleteBoard(thread, threadId) {
+            if (confirm("Are you sure you want to delete thread: " + thread + "?")) {
+                window.location.href = '@Url.Action("DeleteThread", "Admin")/?threadId=' + threadId;
+            }
+
+        }
+    </script>
+}
