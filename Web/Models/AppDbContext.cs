@@ -15,8 +15,8 @@ namespace Web.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Seed();
             base.OnModelCreating(modelBuilder);
-            // modelBuilder.Seed();
         }
     }
 }

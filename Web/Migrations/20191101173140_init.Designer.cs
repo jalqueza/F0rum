@@ -10,8 +10,8 @@ using Web.Models;
 namespace Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20191008211059_userPost")]
-    partial class userPost
+    [Migration("20191101173140_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -194,6 +194,23 @@ namespace Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Boards");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "General"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Technology"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Sports"
+                        });
                 });
 
             modelBuilder.Entity("Web.Models.Post", b =>
@@ -211,8 +228,7 @@ namespace Web.Migrations
 
                     b.Property<int>("ThreadId");
 
-                    b.Property<string>("User")
-                        .IsRequired();
+                    b.Property<string>("User");
 
                     b.HasKey("Id");
 
@@ -221,6 +237,16 @@ namespace Web.Migrations
                     b.HasIndex("ThreadId");
 
                     b.ToTable("Posts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "It's a cold ting",
+                            DateTime = new DateTime(2019, 11, 1, 11, 31, 40, 56, DateTimeKind.Local).AddTicks(8889),
+                            ThreadId = 1,
+                            User = "user1@localhost"
+                        });
                 });
 
             modelBuilder.Entity("Web.Models.Thread", b =>
@@ -241,6 +267,15 @@ namespace Web.Migrations
                     b.HasIndex("BoardId");
 
                     b.ToTable("Threads");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BoardId = 1,
+                            DateTime = new DateTime(2019, 11, 1, 11, 31, 40, 56, DateTimeKind.Local).AddTicks(5561),
+                            Title = "Hows the weather?"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
