@@ -28,7 +28,15 @@ namespace Web.Controllers
             BoardIndexViewModel model = new BoardIndexViewModel();
             model.Board = _boardRepository.GetById(boardId);
 
+            if (model.Board == null)
+            {
+                Response.StatusCode = 404;
+                return View("BoardNotFound", boardId);
+            }
+
             model.ThreadViewModels = new List<BoardIndexThreadViewModel>();
+
+
             foreach (var thread in model.Board.Threads)
             {
                 BoardIndexThreadViewModel boardIndexThreadViewModel = new BoardIndexThreadViewModel();

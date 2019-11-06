@@ -37,3 +37,5 @@ C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor
 C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Admin\ManageUsers.cshtml.g.cs
 C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Account\AccessDenied.cshtml.g.cs
 C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Admin\CreateBoard.cshtml.g.cs
+C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Error\Error.cshtml.g.cs
+C:\Users\Jerwyn Alqueza\source\repos\CoolForum\Web\obj\Debug\netcoreapp2.2\Razor\Views\Error\NotFound.cshtml.g.cs

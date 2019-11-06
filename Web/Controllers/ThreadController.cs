@@ -85,6 +85,11 @@ namespace Web.Controllers
             }
 
             model.Thread = _threadRepository.GetById(model.ThreadId);
+            if (model.Thread == null)
+            {
+                Response.StatusCode = 404;
+                return View("ThreadNotFound", model.ThreadId);
+            }
             model.Username = User.Identity.Name;
 
             return View("Index", model);
